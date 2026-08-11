@@ -3,11 +3,11 @@ import { AppShell } from "@/components/layout/app-shell";
 import { requireUser } from "@/lib/auth/user";
 
 export default async function ProtectedLayout({
-  children,
+    children,
 }: {
-  children: ReactNode;
+    children: ReactNode;
 }) {
-  const user = await requireUser();
+    const user = await requireUser();
 
-  return <AppShell user={user}>{children}</AppShell>;
+    return <AppShell user={user}>{children}</AppShell>;
 }

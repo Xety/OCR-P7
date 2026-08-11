@@ -11,7 +11,7 @@ type AppHeaderProps = {
 export function AppHeader({ user }: AppHeaderProps) {
     return (
         <header className="relative z-40 border-b border-neutral-100 bg-white shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
-            <div className="mx-auto grid w-full max-w-225 grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 px-5 py-3 md:grid-cols-[1fr_auto_1fr] md:px-0 md:py-1.5">
+            <div className="mx-auto grid w-full max-w-300 grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 px-5 py-3 md:grid-cols-[1fr_auto_1fr] md:px-0 md:py-1.5">
                 <Link
                     href="/dashboard"
                     aria-label="Abricot — Tableau de bord"

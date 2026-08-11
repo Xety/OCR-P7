@@ -92,7 +92,7 @@ export function UserMenu({ name, email }: UserMenuProps) {
                 onKeyDown={handleTriggerKeyDown}
                 className={`flex size-12 items-center justify-center rounded-full text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-3 ${isOpen
                     ? "bg-[#df5a00] text-white"
-                    : "bg-[#fde7d8] text-neutral-950 hover:bg-[#df5a00] hover:text-white"
+                    : "bg-[#fde7d8] text-neutral-950 hover:bg-[#df5a00] hover:text-white hover:cursor-pointer"
                     }`}
             >
                 {initials}
@@ -120,7 +120,7 @@ export function UserMenu({ name, email }: UserMenuProps) {
                         <button
                             type="submit"
                             role="menuitem"
-                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-neutral-800 outline-none hover:bg-[#fff1e8] focus:bg-[#fff1e8] focus:text-(--brand)"
+                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-neutral-800 outline-none hover:bg-[#fff1e8] hover:cursor-pointer focus:bg-[#fff1e8] focus:text-(--brand)"
                         >
                             <LogoutIcon className="size-5" />
                             Déconnexion
