@@ -58,3 +58,69 @@ export function LogoutIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function ListIcon(props: IconProps) {
+  return (
+    <svg {...commonProps} {...props}>
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+        d="m5 12 2 2 4-5M13 8h6m-6 4h6m-6 4h4M5.5 3h13A2.5 2.5 0 0 1 21 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 18.5v-13A2.5 2.5 0 0 1 5.5 3Z"
+      />
+    </svg>
+  );
+}
+
+export function KanbanIcon(props: IconProps) {
+  return (
+    <svg {...commonProps} {...props}>
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+        d="M6 3v3m12-3v3M4.75 5h14.5A1.75 1.75 0 0 1 21 6.75v12.5A1.75 1.75 0 0 1 19.25 21H4.75A1.75 1.75 0 0 1 3 19.25V6.75A1.75 1.75 0 0 1 4.75 5ZM7 10h3v3H7v-3Zm7 0h3v3h-3v-3Zm-7 6h3v1H7v-1Zm7 0h3v1h-3v-1Z"
+      />
+    </svg>
+  );
+}
+
+export function CalendarIcon(props: IconProps) {
+  return (
+    <svg {...commonProps} {...props}>
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+        d="M7 3v3m10-3v3M4.75 5h14.5A1.75 1.75 0 0 1 21 6.75v12.5A1.75 1.75 0 0 1 19.25 21H4.75A1.75 1.75 0 0 1 3 19.25V6.75A1.75 1.75 0 0 1 4.75 5ZM3 9h18"
+      />
+    </svg>
+  );
+}
+
+export function CommentIcon(props: IconProps) {
+  return (
+    <svg {...commonProps} {...props}>
+      <path
+        fill="currentColor"
+        d="M5.5 3h13A2.5 2.5 0 0 1 21 5.5v9a2.5 2.5 0 0 1-2.5 2.5h-6.14l-4.73 3.55A1 1 0 0 1 6 19.75V17h-.5A2.5 2.5 0 0 1 3 14.5v-9A2.5 2.5 0 0 1 5.5 3Z"
+      />
+    </svg>
+  );
+}
+
+export function SearchIcon(props: IconProps) {
+  return (
+    <svg {...commonProps} {...props}>
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.8"
+        d="m20 20-4.25-4.25m2.25-5A7.25 7.25 0 1 1 3.5 10.75a7.25 7.25 0 0 1 14.5 0Z"
+      />
+    </svg>
+  );
+}

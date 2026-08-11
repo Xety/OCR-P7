@@ -1,22 +1,29 @@
 import type { Metadata } from "next";
+import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { requireUser } from "@/lib/auth/user";
+import { getAssignedTasks } from "@/lib/dashboard/data";
+import type { DashboardTask } from "@/lib/dashboard/types";
 
 export const metadata: Metadata = {
-  title: "Tableau de bord",
+    title: "Tableau de bord",
 };
 
 export default async function DashboardPage() {
-  const user = await requireUser();
+    const user = await requireUser();
+    let tasks: DashboardTask[] = [];
+    let hasLoadingError = false;
 
-  return (
-    <section className="mx-auto w-full max-w-[900px] px-5 py-12 md:px-0 md:py-16">
-      <h1 className="text-2xl font-semibold text-neutral-950">
-        Tableau de bord
-      </h1>
-      <p className="mt-2 text-base text-neutral-700">
-        Bonjour{user.name ? ` ${user.name}` : ""}, voici un aperçu de vos projets
-        et tâches.
-      </p>
-    </section>
-  );
+    try {
+        tasks = await getAssignedTasks();
+    } catch {
+        hasLoadingError = true;
+    }
+
+    return (
+        <DashboardContent
+            userName={user.name}
+            tasks={tasks}
+            hasLoadingError={hasLoadingError}
+        />
+    );
 }
