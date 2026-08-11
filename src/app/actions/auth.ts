@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { apiRequest, ApiRequestError } from "@/lib/api/client";
 import type { AuthData } from "@/lib/api/types";
-import { createSession } from "@/lib/auth/session";
+import { createSession, deleteSession } from "@/lib/auth/session";
 import type { AuthFormState, AuthFieldErrors } from "@/lib/auth/types";
 import {
     readCredentials,
@@ -78,5 +78,10 @@ export async function signupAction(
     _previousState: AuthFormState,
     formData: FormData,
 ) {
-    return authenticate("signup", formData);
+  return authenticate("signup", formData);
+}
+
+export async function logoutAction() {
+  await deleteSession();
+  redirect("/login");
 }

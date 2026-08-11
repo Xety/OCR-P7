@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/auth/auth-form";
 import { AuthLayout } from "@/components/auth/auth-layout";
+import { getCurrentUser } from "@/lib/auth/user";
 
 export const metadata: Metadata = {
   title: "Connexion",
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  if (await getCurrentUser()) {
+    redirect("/dashboard");
+  }
+
   return (
     <AuthLayout
       title="Connexion"
