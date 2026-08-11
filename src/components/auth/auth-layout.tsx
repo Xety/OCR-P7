@@ -36,7 +36,7 @@ export function AuthLayout({
                 </div>
 
                 <div className="mx-auto flex w-full max-w-83 flex-col justify-center py-12">
-                    <h1 className="mb-10 text-[2.625rem] leading-tight font-semibold text-(--brand) sm:text-5xl">
+                    <h1 className="mb-10 text-[2.5rem] text-center leading-tight font-semibold text-(--brand) sm:text-5xl">
                         {title}
                     </h1>
                     {children}
