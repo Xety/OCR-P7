@@ -1,12 +1,8 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { apiRequest } from "@/lib/api/client";
-import type { ApiUser } from "@/lib/api/types";
+import type { ApiUser, ProfileData } from "@/lib/api/types";
 import { getSessionToken } from "@/lib/auth/session";
-
-type ProfileData = {
-    user: ApiUser;
-};
 
 export const getCurrentUser = cache(async (): Promise<ApiUser | null> => {
     const token = await getSessionToken();

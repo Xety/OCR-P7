@@ -6,10 +6,8 @@ import { apiRequest, ApiRequestError } from "@/lib/api/client";
 import type { AuthData } from "@/lib/api/types";
 import { createSession, deleteSession } from "@/lib/auth/session";
 import type { AuthFormState, AuthFieldErrors } from "@/lib/auth/types";
-import {
-    credentialsSchemas,
-    getCredentialsInput,
-} from "@/lib/auth/validation";
+import { getCredentialsInput } from "@/lib/auth/validation";
+import { credentialsSchemas } from "@/lib/validation/schemas";
 
 function getErrorState(error: unknown): AuthFormState {
     if (error instanceof ApiRequestError) {
@@ -87,10 +85,10 @@ export async function signupAction(
     _previousState: AuthFormState,
     formData: FormData,
 ) {
-  return authenticate("signup", formData);
+    return authenticate("signup", formData);
 }
 
 export async function logoutAction() {
-  await deleteSession();
-  redirect("/login");
+    await deleteSession();
+    redirect("/login");
 }

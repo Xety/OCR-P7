@@ -24,3 +24,7 @@ export type AuthData = {
     user: ApiUser;
     token: string;
 };
+
+export type ProfileData = {
+    user: ApiUser;
+};
