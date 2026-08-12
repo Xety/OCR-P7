@@ -1,13 +1,14 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import * as z from "zod";
 import { apiRequest, ApiRequestError } from "@/lib/api/client";
 import type { AuthData } from "@/lib/api/types";
 import { createSession, deleteSession } from "@/lib/auth/session";
 import type { AuthFormState, AuthFieldErrors } from "@/lib/auth/types";
 import {
-    readCredentials,
-    validateCredentials,
+    credentialsSchemas,
+    getCredentialsInput,
 } from "@/lib/auth/validation";
 
 function getErrorState(error: unknown): AuthFormState {
@@ -39,11 +40,19 @@ async function authenticate(
     mode: "login" | "signup",
     formData: FormData,
 ): Promise<AuthFormState> {
-    const credentials = readCredentials(formData);
-    const errors = validateCredentials(credentials, mode);
+    const result = credentialsSchemas[mode].safeParse(
+        getCredentialsInput(formData),
+    );
 
-    if (errors) {
-        return { errors };
+    if (!result.success) {
+        const { fieldErrors } = z.flattenError(result.error);
+
+        return {
+            errors: {
+                email: fieldErrors.email,
+                password: fieldErrors.password,
+            },
+        };
     }
 
     try {
@@ -51,7 +60,7 @@ async function authenticate(
             mode === "login" ? "/auth/login" : "/auth/register",
             {
                 method: "POST",
-                body: JSON.stringify(credentials),
+                body: JSON.stringify(result.data),
             },
         );
 
