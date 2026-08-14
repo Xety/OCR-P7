@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { joinFullName } from "../account/user-name";
+import { joinFullName } from "@/lib/user";
 
 export const validationMessages = {
     requiredEmail: "L’adresse email est requise.",

@@ -1,6 +1,10 @@
-import { redirect } from "next/navigation";
-import { apiRequest, ApiRequestError } from "@/lib/api/client";
-import { getSessionToken } from "@/lib/auth/session";
+import "server-only";
+
+import { apiRequest } from "@/lib/api/client";
+import {
+    redirectOnExpiredSession,
+    requireSessionToken,
+} from "@/lib/auth/session-guard";
 import { prepareDashboardTasks } from "@/lib/dashboard/task-utils";
 import type { DashboardTask } from "@/lib/dashboard/types";
 
@@ -9,11 +13,7 @@ type AssignedTasksData = {
 };
 
 export async function getAssignedTasks() {
-    const token = await getSessionToken();
-
-    if (!token) {
-        redirect("/login");
-    }
+    const token = await requireSessionToken();
 
     try {
         const response = await apiRequest<AssignedTasksData>(
@@ -23,9 +23,7 @@ export async function getAssignedTasks() {
 
         return prepareDashboardTasks(response.data?.tasks ?? []);
     } catch (error) {
-        if (error instanceof ApiRequestError && error.status === 401) {
-            redirect("/login");
-        }
+        await redirectOnExpiredSession(error);
 
         throw error;
     }

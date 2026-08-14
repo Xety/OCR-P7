@@ -3,6 +3,10 @@
 import { redirect } from "next/navigation";
 import * as z from "zod";
 import { apiRequest, ApiRequestError } from "@/lib/api/client";
+import {
+    mapApiFieldErrors,
+    SERVICE_UNAVAILABLE_MESSAGE,
+} from "@/lib/api/errors";
 import type { AuthData } from "@/lib/api/types";
 import { createSession, deleteSession } from "@/lib/auth/session";
 import type { AuthFormState, AuthFieldErrors } from "@/lib/auth/types";
@@ -11,16 +15,10 @@ import { credentialsSchemas } from "@/lib/validation/schemas";
 
 function getErrorState(error: unknown): AuthFormState {
     if (error instanceof ApiRequestError) {
-        const errors = error.fieldErrors.reduce<AuthFieldErrors>(
-            (fieldErrors, fieldError) => {
-                if (fieldError.field === "email" || fieldError.field === "password") {
-                    fieldErrors[fieldError.field] = [fieldError.message];
-                }
-
-                return fieldErrors;
-            },
-            {},
-        );
+        const errors: AuthFieldErrors = mapApiFieldErrors(error, {
+            email: "email",
+            password: "password",
+        });
 
         return {
             errors: Object.keys(errors).length > 0 ? errors : undefined,
@@ -29,8 +27,7 @@ function getErrorState(error: unknown): AuthFormState {
     }
 
     return {
-        message:
-            "Le service est momentanément indisponible. Veuillez réessayer plus tard.",
+        message: SERVICE_UNAVAILABLE_MESSAGE,
     };
 }
 

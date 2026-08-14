@@ -1,66 +1,34 @@
 "use server";
 
 import { refresh } from "next/cache";
-import { redirect } from "next/navigation";
+import { unstable_rethrow } from "next/navigation";
 import * as z from "zod";
-import { apiRequest, ApiRequestError } from "@/lib/api/client";
-import type { ProfileData } from "@/lib/api/types";
-import {
-    getPasswordInput,
-    getProfileInput
-} from "@/lib/account/validation";
-import { joinFullName } from "@/lib/account/user-name";
+import { updatePassword, updateProfile } from "@/lib/account/service";
+import { getPasswordInput, getProfileInput } from "@/lib/account/validation";
 import type {
     PasswordActionState,
     PasswordFieldErrors,
     ProfileActionState,
     ProfileFieldErrors,
 } from "@/lib/account/types";
-import { deleteSession, getSessionToken } from "@/lib/auth/session";
+import { ApiRequestError } from "@/lib/api/client";
+import {
+    mapApiFieldErrors,
+    SERVICE_UNAVAILABLE_MESSAGE,
+} from "@/lib/api/errors";
+import { redirectOnExpiredSession } from "@/lib/auth/session-guard";
+import { joinFullName } from "@/lib/user";
 import { profileSchema, passwordUpdateSchema } from "@/lib/validation/schemas";
-
-const unavailableMessage =
-    "Le service est momentanément indisponible. Veuillez réessayer plus tard.";
-
-async function requireSessionToken() {
-    const token = await getSessionToken();
-
-    if (!token) {
-        redirect("/login");
-    }
-
-    return token;
-}
-
-async function redirectOnExpiredSession(
-    error: ApiRequestError,
-    allowedAuthenticationError?: string,
-) {
-    if (error.status === 401 && error.code !== allowedAuthenticationError) {
-        await deleteSession();
-        redirect("/login");
-    }
-}
 
 function getProfileErrorState(error: unknown): ProfileActionState {
     if (!(error instanceof ApiRequestError)) {
-        return { status: "error", message: unavailableMessage };
+        return { status: "error", message: SERVICE_UNAVAILABLE_MESSAGE };
     }
 
-    const errors = error.fieldErrors.reduce<ProfileFieldErrors>(
-        (fieldErrors, fieldError) => {
-            if (fieldError.field === "email") {
-                fieldErrors.email = [fieldError.message];
-            }
-
-            if (fieldError.field === "name") {
-                fieldErrors.firstName = [fieldError.message];
-            }
-
-            return fieldErrors;
-        },
-        {},
-    );
+    const errors: ProfileFieldErrors = mapApiFieldErrors(error, {
+        email: "email",
+        name: "firstName",
+    });
 
     if (error.code === "EMAIL_ALREADY_EXISTS") {
         errors.email = [error.message];
@@ -75,22 +43,13 @@ function getProfileErrorState(error: unknown): ProfileActionState {
 
 function getPasswordErrorState(error: unknown): PasswordActionState {
     if (!(error instanceof ApiRequestError)) {
-        return { status: "error", message: unavailableMessage };
+        return { status: "error", message: SERVICE_UNAVAILABLE_MESSAGE };
     }
 
-    const errors = error.fieldErrors.reduce<PasswordFieldErrors>(
-        (fieldErrors, fieldError) => {
-            if (
-                fieldError.field === "currentPassword" ||
-                fieldError.field === "newPassword"
-            ) {
-                fieldErrors[fieldError.field] = [fieldError.message];
-            }
-
-            return fieldErrors;
-        },
-        {},
-    );
+    const errors: PasswordFieldErrors = mapApiFieldErrors(error, {
+        currentPassword: "currentPassword",
+        newPassword: "newPassword",
+    });
 
     if (error.code === "INVALID_CURRENT_PASSWORD") {
         errors.currentPassword = [error.message];
@@ -122,17 +81,12 @@ export async function updateProfileAction(
         };
     }
 
-    const token = await requireSessionToken();
     const fullName = joinFullName(result.data.firstName, result.data.lastName);
 
     try {
-        const response = await apiRequest<ProfileData>("/auth/profile", {
-            method: "PUT",
-            token,
-            body: JSON.stringify({
-                email: result.data.email,
-                ...(fullName ? { name: fullName } : {}),
-            }),
+        const response = await updateProfile({
+            email: result.data.email,
+            ...(fullName ? { name: fullName } : {}),
         });
 
         refresh();
@@ -142,9 +96,8 @@ export async function updateProfileAction(
             message: response.message || "Profil mis à jour avec succès.",
         };
     } catch (error) {
-        if (error instanceof ApiRequestError) {
-            await redirectOnExpiredSession(error);
-        }
+        unstable_rethrow(error);
+        await redirectOnExpiredSession(error);
 
         return getProfileErrorState(error);
     }
@@ -168,26 +121,16 @@ export async function updatePasswordAction(
         };
     }
 
-    const token = await requireSessionToken();
-
     try {
-        const response = await apiRequest<Record<string, never>>(
-            "/auth/password",
-            {
-                method: "PUT",
-                token,
-                body: JSON.stringify(result.data),
-            },
-        );
+        const response = await updatePassword(result.data);
 
         return {
             status: "success",
             message: response.message || "Mot de passe mis à jour avec succès.",
         };
     } catch (error) {
-        if (error instanceof ApiRequestError) {
-            await redirectOnExpiredSession(error, "INVALID_CURRENT_PASSWORD");
-        }
+        unstable_rethrow(error);
+        await redirectOnExpiredSession(error, ["INVALID_CURRENT_PASSWORD"]);
 
         return getPasswordErrorState(error);
     }

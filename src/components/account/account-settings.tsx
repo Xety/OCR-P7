@@ -10,7 +10,7 @@ import type {
     PasswordActionState,
     ProfileActionState,
 } from "@/lib/account/types";
-import { splitFullName } from "@/lib/account/user-name";
+import { splitFullName } from "@/lib/user";
 
 type AccountSettingsProps = {
     user: ApiUser;
