@@ -45,6 +45,17 @@ export function UserIcon(props: IconProps) {
   );
 }
 
+export function TeamIcon(props: IconProps) {
+  return (
+    <svg {...commonProps} {...props}>
+      <path
+        fill="currentColor"
+        d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7.5-1a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 19a7 7 0 0 1 14 0v1H2v-1Zm14.25 1v-1a8.7 8.7 0 0 0-2.13-5.7A5.5 5.5 0 0 1 22 18.3V20h-5.75Z"
+      />
+    </svg>
+  );
+}
+
 export function LogoutIcon(props: IconProps) {
   return (
     <svg {...commonProps} {...props}>

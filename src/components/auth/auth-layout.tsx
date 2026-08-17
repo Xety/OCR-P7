@@ -24,7 +24,7 @@ export function AuthLayout({
     return (
         <main className="grid min-h-dvh bg-(--auth-panel) lg:grid-cols-[39%_61%]">
             <section className="grid min-h-dvh grid-rows-[auto_1fr_auto] px-6 py-10 sm:px-12 lg:px-8 lg:py-[9vh]">
-                <div className="mx-auto w-full max-w-83">
+                <div className="mx-auto">
                     <Image
                         src="/images/logo.svg"
                         alt="Abricot"

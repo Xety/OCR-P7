@@ -35,7 +35,7 @@ export function AppNavigation() {
                                 aria-current={isActive ? "page" : undefined}
                                 className={`flex h-12 items-center justify-center gap-3 rounded-lg px-4 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2 sm:min-w-40 md:h-14 ${isActive
                                     ? "bg-[#151515] text-white"
-                                    : "text-(--brand) hover:bg-[#fff1e8]"
+                                    : "text-(--brand-text) hover:bg-[#fff1e8]"
                                     }`}
                             >
                                 <Icon className="size-5" />

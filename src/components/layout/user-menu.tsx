@@ -110,7 +110,7 @@ export function UserMenu({ name, email }: UserMenuProps) {
                         href="/account"
                         role="menuitem"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-neutral-800 outline-none hover:bg-[#fff1e8] focus:bg-[#fff1e8] focus:text-(--brand)"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-neutral-800 outline-none hover:bg-[#fff1e8] focus:bg-[#fff1e8] focus:text-(--brand-text)"
                     >
                         <UserIcon className="size-5" />
                         Mon Compte
@@ -120,7 +120,7 @@ export function UserMenu({ name, email }: UserMenuProps) {
                         <button
                             type="submit"
                             role="menuitem"
-                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-neutral-800 outline-none hover:bg-[#fff1e8] hover:cursor-pointer focus:bg-[#fff1e8] focus:text-(--brand)"
+                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-neutral-800 outline-none hover:bg-[#fff1e8] hover:cursor-pointer focus:bg-[#fff1e8] focus:text-(--brand-text)"
                         >
                             <LogoutIcon className="size-5" />
                             Déconnexion
