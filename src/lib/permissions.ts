@@ -1,5 +1,5 @@
 export type BackendProjectRole = "ADMIN" | "CONTRIBUTOR" | null;
-export type ProjectRole = "OWNER" | "ADMIN" | "CONTRIBUTOR";
+export type ProjectRole = "ADMIN" | "CONTRIBUTOR";
 
 export type ProjectPermission =
     | "viewProject"
@@ -17,19 +17,10 @@ export type ProjectAccess = {
 };
 
 const ROLE_PERMISSIONS: Record<ProjectRole, readonly ProjectPermission[]> = {
-    OWNER: [
-        "viewProject",
-        "updateProject",
-        "deleteProject",
-        "manageMembers",
-        "viewTasks",
-        "createTasks",
-        "updateTasks",
-        "deleteTasks",
-    ],
     ADMIN: [
         "viewProject",
         "updateProject",
+        "deleteProject",
         "manageMembers",
         "viewTasks",
         "createTasks",
@@ -54,7 +45,7 @@ export function resolveProjectRole(
     userId: string,
 ): ProjectRole | null {
     if (project.ownerId === userId) {
-        return "OWNER";
+        return "ADMIN";
     }
 
     return project.userRole;

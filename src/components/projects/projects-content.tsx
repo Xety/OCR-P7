@@ -41,12 +41,12 @@ export function ProjectsContent({
                     <p className="mt-2 text-sm text-neutral-600">
                         Vérifiez que le backend est disponible, puis réessayez.
                     </p>
-                    <a
+                    <Link
                         href="/projects"
                         className="mt-5 inline-flex h-11 items-center justify-center rounded-lg bg-[#202020] px-5 text-sm text-white outline-none hover:bg-black focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
                     >
                         Réessayer
-                    </a>
+                    </Link>
                 </div>
             ) : projects.length > 0 ? (
                 <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">

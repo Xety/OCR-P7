@@ -29,7 +29,9 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -63,4 +65,8 @@ button {
 .project-progress::-moz-progress-bar {
   border-radius: 9999px;
   background: var(--brand);
+}
+
+.app-modal::backdrop {
+  background: rgb(15 23 42 / 45%);
 }

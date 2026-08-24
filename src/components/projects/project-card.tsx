@@ -70,7 +70,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                         </span>
                         <div className="flex min-w-0 items-center -space-x-1">
                             {visibleMembers.map((member) => (
-                                <Avatar key={member.id} user={member} variant="member" />
+                                <Avatar key={member.id} user={member} variant="contributor" />
                             ))}
                             {hiddenMembersCount > 0 && (
                                 <span
@@ -93,7 +93,7 @@ function Avatar({
     variant,
 }: {
     user: ApiUser;
-    variant: "owner" | "member";
+    variant: "owner" | "contributor";
 }) {
     const label = user.name || user.email;
 

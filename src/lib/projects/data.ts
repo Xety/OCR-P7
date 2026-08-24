@@ -2,11 +2,16 @@ import "server-only";
 
 import { apiRequest } from "@/lib/api/client";
 import { requireSessionToken } from "@/lib/auth/session-guard";
-import { prepareProjectCard } from "@/lib/projects/project-utils";
+import {
+    prepareProjectCard,
+    prepareProjectDetails,
+} from "@/lib/projects/project-utils";
 import type {
     ApiProjectDetail,
     ApiProjectSummary,
+    ApiProjectTask,
     ProjectCardData,
+    ProjectDetailsData,
 } from "@/lib/projects/types";
 
 type ProjectsData = {
@@ -15,6 +20,10 @@ type ProjectsData = {
 
 type ProjectDetailData = {
     project: ApiProjectDetail;
+};
+
+type ProjectTasksData = {
+    tasks: ApiProjectTask[];
 };
 
 /**
@@ -53,4 +62,28 @@ export async function getProjects(): Promise<ProjectCardData[]> {
             return prepareProjectCard(project, detail.tasks ?? []);
         }),
     );
+}
+
+/**
+ * Récupère un projet et ses tâches enrichies pour la page de détail.
+ */
+export async function getProjectDetails(
+    projectId: string,
+): Promise<ProjectDetailsData> {
+    const token = await requireSessionToken();
+    const encodedProjectId = encodeURIComponent(projectId);
+    const [projectResponse, tasksResponse] = await Promise.all([
+        apiRequest<ProjectDetailData>(`/projects/${encodedProjectId}`, { token }),
+        apiRequest<ProjectTasksData>(`/projects/${encodedProjectId}/tasks`, {
+            token,
+        }),
+    ]);
+    const project = projectResponse.data?.project;
+    const tasks = tasksResponse.data?.tasks;
+
+    if (!project || !tasks) {
+        throw new Error("La réponse du serveur ne contient pas le projet attendu.");
+    }
+
+    return prepareProjectDetails(project, tasks);
 }
