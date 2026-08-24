@@ -1,16 +1,28 @@
 import Image from "next/image";
+import { ProjectCommentForm } from "@/components/projects/project-comment-form";
+import type { ApiUser } from "@/lib/api/types";
 import { formatProjectCommentDate } from "@/lib/projects/project-utils";
 import type { ApiTaskComment } from "@/lib/projects/types";
 import { getUserInitials } from "@/lib/user";
 
 type ProjectTaskCommentsProps = {
+    projectId: string;
+    taskId: string;
     comments: ApiTaskComment[];
+    currentUser: ApiUser;
+    canComment: boolean;
 };
 
 /**
  * Affiche les commentaires d’une tâche dans un accordéon natif accessible.
  */
-export function ProjectTaskComments({ comments }: ProjectTaskCommentsProps) {
+export function ProjectTaskComments({
+    projectId,
+    taskId,
+    comments,
+    currentUser,
+    canComment,
+}: ProjectTaskCommentsProps) {
     return (
         <details className="group mt-6 border-t border-[#e5e7eb] pt-1">
             <summary className="flex cursor-pointer list-none items-center justify-between rounded-md py-4 text-sm text-neutral-900 outline-none focus-visible:ring-2 focus-visible:ring-(--brand)">
@@ -75,6 +87,13 @@ export function ProjectTaskComments({ comments }: ProjectTaskCommentsProps) {
                     <p className="py-2 text-sm text-[#4B5563]">
                         Aucun commentaire pour cette tâche.
                     </p>
+                )}
+                {canComment && (
+                    <ProjectCommentForm
+                        projectId={projectId}
+                        taskId={taskId}
+                        currentUser={currentUser}
+                    />
                 )}
             </div>
         </details>

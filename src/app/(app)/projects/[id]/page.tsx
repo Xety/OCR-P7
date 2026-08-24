@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound, redirect, unstable_rethrow } from "next/navigation";
 import { ProjectDetailsContent } from "@/components/projects/project-details-content";
 import { ApiRequestError } from "@/lib/api/client";
+import type { ApiUser } from "@/lib/api/types";
+import { requireUser } from "@/lib/auth/user";
 import { getProjectDetails } from "@/lib/projects/data";
 import type { ProjectDetailsData } from "@/lib/projects/types";
 
@@ -17,9 +19,13 @@ export default async function ProjectPage({
 }) {
     const { id } = await params;
     let project: ProjectDetailsData | undefined;
+    let currentUser: ApiUser | undefined;
 
     try {
-        project = await getProjectDetails(id);
+        [project, currentUser] = await Promise.all([
+            getProjectDetails(id),
+            requireUser(),
+        ]);
     } catch (error) {
         unstable_rethrow(error);
 
@@ -35,8 +41,13 @@ export default async function ProjectPage({
 
     }
 
-    if (project) {
-        return <ProjectDetailsContent project={project} />;
+    if (project && currentUser) {
+        return (
+            <ProjectDetailsContent
+                project={project}
+                currentUser={currentUser}
+            />
+        );
     }
 
     return (

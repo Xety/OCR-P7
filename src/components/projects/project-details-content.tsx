@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { ProjectEditModal } from "@/components/projects/project-edit-modal";
 import { ProjectTaskCard } from "@/components/projects/project-task-card";
 import { SearchIcon, TeamIcon } from "@/components/ui/icons";
+import type { ApiUser } from "@/lib/api/types";
 import {
     filterProjectTasks,
     projectTaskStatusLabels,
@@ -17,6 +18,7 @@ import { getUserInitials } from "@/lib/user";
 
 type ProjectDetailsContentProps = {
     project: ProjectDetailsData;
+    currentUser: ApiUser;
 };
 
 type ActiveModal = "edit-project" | "create-task" | "ai" | null;
@@ -32,7 +34,10 @@ const statusOptions: Array<{
         })),
     ];
 
-export function ProjectDetailsContent({ project }: ProjectDetailsContentProps) {
+export function ProjectDetailsContent({
+    project,
+    currentUser,
+}: ProjectDetailsContentProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [status, setStatus] = useState<ProjectTaskStatus | "ALL">("ALL");
     const [activeModal, setActiveModal] = useState<ActiveModal>(null);
@@ -40,6 +45,9 @@ export function ProjectDetailsContent({ project }: ProjectDetailsContentProps) {
         () => filterProjectTasks(project.tasks, searchQuery, status),
         [project.tasks, searchQuery, status],
     );
+    const canComment =
+        project.owner.id === currentUser.id ||
+        project.members.some((member) => member.user.id === currentUser.id);
 
     return (
         <section className="mx-auto w-full max-w-300 px-5 py-10 md:px-0 md:py-14">
@@ -202,7 +210,12 @@ export function ProjectDetailsContent({ project }: ProjectDetailsContentProps) {
                 {filteredTasks.length > 0 ? (
                     <div className="mt-8 flex flex-col gap-4">
                         {filteredTasks.map((task) => (
-                            <ProjectTaskCard key={task.id} task={task} />
+                            <ProjectTaskCard
+                                key={task.id}
+                                task={task}
+                                currentUser={currentUser}
+                                canComment={canComment}
+                            />
                         ))}
                     </div>
                 ) : (

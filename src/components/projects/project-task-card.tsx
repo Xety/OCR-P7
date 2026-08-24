@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ProjectTaskComments } from "@/components/projects/project-task-comments";
 import { CalendarIcon } from "@/components/ui/icons";
+import type { ApiUser } from "@/lib/api/types";
 import {
     formatProjectDate,
     projectTaskStatusLabels,
@@ -12,6 +13,8 @@ import { getUserInitials } from "@/lib/user";
 
 type ProjectTaskCardProps = {
     task: ApiProjectTask;
+    currentUser: ApiUser;
+    canComment: boolean;
 };
 
 const statusStyles = {
@@ -21,7 +24,11 @@ const statusStyles = {
     CANCELLED: "bg-[#e4e7eb] text-[#4B5563]",
 } as const;
 
-export function ProjectTaskCard({ task }: ProjectTaskCardProps) {
+export function ProjectTaskCard({
+    task,
+    currentUser,
+    canComment,
+}: ProjectTaskCardProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const menuWrapperRef = useRef<HTMLDivElement>(null);
@@ -159,7 +166,13 @@ export function ProjectTaskCard({ task }: ProjectTaskCardProps) {
                     </span>
                 </div>
 
-                <ProjectTaskComments comments={task.comments} />
+                <ProjectTaskComments
+                    projectId={task.projectId}
+                    taskId={task.id}
+                    comments={task.comments}
+                    currentUser={currentUser}
+                    canComment={canComment}
+                />
             </article>
 
             {isEditModalOpen && (
