@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { ProjectsContent } from "@/components/projects/projects-content";
 import { ApiRequestError } from "@/lib/api/client";
+import { requireUser } from "@/lib/auth/user";
 import { getProjects } from "@/lib/projects/data";
 import type { ProjectCardData } from "@/lib/projects/types";
 
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProjectsPage() {
+    const user = await requireUser();
     let projects: ProjectCardData[] = [];
     let hasLoadingError = false;
 
@@ -29,6 +31,7 @@ export default async function ProjectsPage() {
         <ProjectsContent
             projects={projects}
             hasLoadingError={hasLoadingError}
+            ownerId={user.id}
         />
     );
 }

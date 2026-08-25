@@ -6,8 +6,7 @@ export const projectContributorSchema = z.object({
     name: z.string().nullable(),
 });
 
-export const projectUpdateSchema = z.object({
-    projectId: z.string().trim().min(1, "L’identifiant du projet est requis."),
+const projectFormSchema = z.object({
     name: z
         .string()
         .trim()
@@ -19,6 +18,12 @@ export const projectUpdateSchema = z.object({
         .min(1, "La description est requise.")
         .max(500, "La description ne peut pas dépasser 500 caractères."),
     contributors: z.array(projectContributorSchema),
+});
+
+export const projectCreateSchema = projectFormSchema;
+
+export const projectUpdateSchema = projectFormSchema.extend({
+    projectId: z.string().trim().min(1, "L’identifiant du projet est requis."),
 });
 
 export const userSearchSchema = z

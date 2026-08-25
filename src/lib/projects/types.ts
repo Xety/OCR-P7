@@ -113,6 +113,10 @@ export type ProjectUpdateState = {
     message?: string;
 };
 
+export type ProjectCreateState = ProjectUpdateState & {
+    projectId?: string;
+};
+
 export type UserSearchResult = {
     users: ApiUser[];
     message?: string;

@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TaskCard } from "@/components/dashboard/task-card";
+import { ProjectCreateButton } from "@/components/projects/project-create-button";
 import {
     KanbanIcon,
     ListIcon,
@@ -18,6 +18,7 @@ import type { DashboardTask } from "@/lib/dashboard/types";
 
 type DashboardContentProps = {
     userName: string | null;
+    userId: string;
     tasks: DashboardTask[];
     hasLoadingError: boolean;
 };
@@ -26,6 +27,7 @@ type DashboardView = "list" | "kanban";
 
 export function DashboardContent({
     userName,
+    userId,
     tasks,
     hasLoadingError,
 }: DashboardContentProps) {
@@ -49,12 +51,7 @@ export function DashboardContent({
                         projets et tâches.
                     </p>
                 </div>
-                <Link
-                    href="/projects/new"
-                    className="flex h-11 items-center justify-center rounded-lg bg-[#202020] px-6 text-sm text-white outline-none transition-colors hover:bg-black focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
-                >
-                    + Créer un projet
-                </Link>
+                <ProjectCreateButton ownerId={userId} />
             </div>
 
             <div className="mt-10 flex items-center gap-2" aria-label="Vue du dashboard">

@@ -10,17 +10,20 @@ import {
 } from "@/lib/api/errors";
 import { redirectOnExpiredSession } from "@/lib/auth/session-guard";
 import {
+    createProject,
     PartialProjectUpdateError,
     searchProjectUsers,
     updateProjectWithContributors,
 } from "@/lib/projects/service";
 import type {
     ProjectContributorInput,
+    ProjectCreateState,
     ProjectFieldErrors,
     ProjectUpdateState,
     UserSearchResult,
 } from "@/lib/projects/types";
 import {
+    projectCreateSchema,
     projectUpdateSchema,
     userSearchSchema,
 } from "@/lib/projects/validation";
@@ -42,6 +45,54 @@ function getContributors(formData: FormData): unknown {
         return JSON.parse(value) as unknown;
     } catch {
         return null;
+    }
+}
+
+/**
+ * Crée un projet avec les données validées du formulaire.
+ */
+export async function createProjectAction(
+    _previousState: ProjectCreateState,
+    formData: FormData,
+): Promise<ProjectCreateState> {
+    const result = projectCreateSchema.safeParse({
+        name: formData.get("name"),
+        description: formData.get("description"),
+        contributors: getContributors(formData),
+    });
+
+    if (!result.success) {
+        const { fieldErrors } = z.flattenError(result.error);
+
+        return {
+            status: "error",
+            errors: {
+                name: fieldErrors.name,
+                description: fieldErrors.description,
+                contributors: fieldErrors.contributors,
+            },
+        };
+    }
+
+    try {
+        const { response, projectId } = await createProject({
+            name: result.data.name,
+            description: result.data.description,
+            contributors: result.data.contributors as ProjectContributorInput[],
+        });
+
+        revalidatePath("/projects");
+
+        return {
+            status: "success",
+            message: response.message || "Projet créé avec succès.",
+            projectId,
+        };
+    } catch (error) {
+        unstable_rethrow(error);
+        await redirectOnExpiredSession(error);
+
+        return getProjectErrorState(error);
     }
 }
 

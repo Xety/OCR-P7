@@ -1,15 +1,18 @@
 import Link from "next/link";
 import { ProjectCard } from "@/components/projects/project-card";
+import { ProjectCreateButton } from "@/components/projects/project-create-button";
 import type { ProjectCardData } from "@/lib/projects/types";
 
 type ProjectsContentProps = {
     projects: ProjectCardData[];
     hasLoadingError: boolean;
+    ownerId: string;
 };
 
 export function ProjectsContent({
     projects,
     hasLoadingError,
+    ownerId,
 }: ProjectsContentProps) {
     return (
         <section className="mx-auto w-full max-w-300 px-5 py-12 md:px-0 md:py-16">
@@ -22,12 +25,7 @@ export function ProjectsContent({
                         Gérez vos projets
                     </p>
                 </div>
-                <Link
-                    href="/projects/new"
-                    className="flex h-11 items-center justify-center rounded-lg bg-[#202020] px-6 text-sm text-white outline-none transition-colors hover:bg-black focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
-                >
-                    + Créer un projet
-                </Link>
+                <ProjectCreateButton ownerId={ownerId} />
             </div>
 
             {hasLoadingError ? (

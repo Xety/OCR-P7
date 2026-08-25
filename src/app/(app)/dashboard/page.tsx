@@ -22,6 +22,7 @@ export default async function DashboardPage() {
     return (
         <DashboardContent
             userName={user.name}
+            userId={user.id}
             tasks={tasks}
             hasLoadingError={hasLoadingError}
         />

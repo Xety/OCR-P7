@@ -11,6 +11,7 @@ type ContributorSelectProps = {
     ownerId: string;
     onChange: (contributors: ApiUser[]) => void;
     errorId?: string;
+    emptyLabel?: string;
 };
 
 export function ContributorSelect({
@@ -18,6 +19,7 @@ export function ContributorSelect({
     ownerId,
     onChange,
     errorId,
+    emptyLabel,
 }: ContributorSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState("");
@@ -95,7 +97,9 @@ export function ContributorSelect({
                 className="mt-2 flex min-h-12 w-full items-center justify-between rounded-md border border-[#cbd1d8] bg-white px-4 text-left text-sm text-[#4B5563] outline-none hover:border-[#9ca3af] hover:cursor-pointer focus-visible:border-(--brand) focus-visible:ring-2 focus-visible:ring-[#d3590b33]"
             >
                 <span id={countId}>
-                    {selected.length} {selected.length > 1 ? "collaborateurs" : "collaborateur"}
+                    {selected.length === 0 && emptyLabel
+                        ? emptyLabel
+                        : `${selected.length} ${selected.length > 1 ? "collaborateurs" : "collaborateur"}`}
                 </span>
                 <Image
                     src={isOpen ? "/icons/arrow_up.svg" : "/icons/arrow_down.svg"}

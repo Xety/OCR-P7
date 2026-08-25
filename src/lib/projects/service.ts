@@ -3,6 +3,7 @@ import "server-only";
 import { apiRequest, ApiRequestError } from "@/lib/api/client";
 import type { ApiUser } from "@/lib/api/types";
 import { requireSessionToken } from "@/lib/auth/session-guard";
+import { requireUser } from "@/lib/auth/user";
 import type {
     ApiProjectDetail,
     ProjectContributorInput,
@@ -14,6 +15,18 @@ type ProjectDetailData = {
 
 type UsersData = {
     users: ApiUser[];
+};
+
+type ProjectCreateData = {
+    project: {
+        id: string;
+    };
+};
+
+export type CreateProjectInput = {
+    name: string;
+    description: string;
+    contributors: ProjectContributorInput[];
 };
 
 export type UpdateProjectInput = {
@@ -29,6 +42,39 @@ export class PartialProjectUpdateError extends Error {
         );
         this.name = "PartialProjectUpdateError";
     }
+}
+
+/**
+ * Crée un projet dont l’utilisateur authentifié devient propriétaire.
+ */
+export async function createProject(input: CreateProjectInput) {
+    const [token, currentUser] = await Promise.all([
+        requireSessionToken(),
+        requireUser(),
+    ]);
+    const contributorEmails = [
+        ...new Set(
+            input.contributors
+                .map((contributor) => contributor.email.trim().toLowerCase())
+                .filter((email) => email !== currentUser.email.toLowerCase()),
+        ),
+    ];
+    const response = await apiRequest<ProjectCreateData>("/projects", {
+        method: "POST",
+        token,
+        body: JSON.stringify({
+            name: input.name,
+            description: input.description,
+            contributors: contributorEmails,
+        }),
+    });
+    const projectId = response.data?.project?.id;
+
+    if (!projectId) {
+        throw new Error("La réponse du serveur ne contient pas le projet créé.");
+    }
+
+    return { response, projectId };
 }
 
 /**
