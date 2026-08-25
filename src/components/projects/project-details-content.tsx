@@ -59,6 +59,7 @@ export function ProjectDetailsContent({
         currentUser.id,
     );
     const canCreateTasks = hasProjectPermission(projectRole, "createTasks");
+    const canUpdateTasks = hasProjectPermission(projectRole, "updateTasks");
 
     return (
         <section className="mx-auto w-full max-w-300 px-5 py-10 md:px-0 md:py-14">
@@ -230,6 +231,9 @@ export function ProjectDetailsContent({
                                 task={task}
                                 currentUser={currentUser}
                                 canComment={canComment}
+                                canUpdateTasks={canUpdateTasks}
+                                ownerId={project.owner.id}
+                                team={project.team}
                             />
                         ))}
                     </div>

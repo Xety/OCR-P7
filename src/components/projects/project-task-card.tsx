@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ProjectEditTaskModal } from "@/components/projects/project-edit-task-modal";
 import { ProjectTaskComments } from "@/components/projects/project-task-comments";
 import { CalendarIcon } from "@/components/ui/icons";
 import type { ApiUser } from "@/lib/api/types";
@@ -8,13 +9,19 @@ import {
     formatProjectDate,
     projectTaskStatusLabels,
 } from "@/lib/projects/project-utils";
-import type { ApiProjectTask } from "@/lib/projects/types";
+import type {
+    ApiProjectTask,
+    ProjectTeamMember,
+} from "@/lib/projects/types";
 import { getUserInitials } from "@/lib/user";
 
 type ProjectTaskCardProps = {
     task: ApiProjectTask;
     currentUser: ApiUser;
     canComment: boolean;
+    canUpdateTasks: boolean;
+    ownerId: string;
+    team: ProjectTeamMember[];
 };
 
 const statusStyles = {
@@ -28,6 +35,9 @@ export function ProjectTaskCard({
     task,
     currentUser,
     canComment,
+    canUpdateTasks,
+    ownerId,
+    team,
 }: ProjectTaskCardProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -61,6 +71,11 @@ export function ProjectTaskCard({
             document.removeEventListener("keydown", closeOnEscape);
         };
     }, [isMenuOpen]);
+
+    function closeEditModal() {
+        setIsEditModalOpen(false);
+        window.requestAnimationFrame(() => menuTriggerRef.current?.focus());
+    }
 
     return (
         <>
@@ -100,16 +115,19 @@ export function ProjectTaskCard({
                                 aria-label={`Actions pour ${task.title}`}
                                 className="absolute top-[calc(100%+0.5rem)] right-0 z-20 w-44 rounded-lg border border-[#d9dee3] bg-white p-1.5 shadow-[0_12px_30px_rgba(15,23,42,0.14)]"
                             >
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsMenuOpen(false);
-                                        setIsEditModalOpen(true);
-                                    }}
-                                    className="w-full rounded-md px-3 py-2 text-left text-sm text-neutral-900 outline-none hover:bg-[#fff1e8] focus-visible:ring-2 focus-visible:ring-(--brand) hover:cursor-pointer"
-                                >
-                                    Modifier
-                                </button>
+                                {canUpdateTasks && (
+                                    <button
+                                        type="button"
+                                        aria-haspopup="dialog"
+                                        onClick={() => {
+                                            setIsMenuOpen(false);
+                                            setIsEditModalOpen(true);
+                                        }}
+                                        className="w-full rounded-md px-3 py-2 text-left text-sm text-neutral-900 outline-none hover:bg-[#fff1e8] focus-visible:ring-2 focus-visible:ring-(--brand) hover:cursor-pointer"
+                                    >
+                                        Modifier
+                                    </button>
+                                )}
                                 <button
                                     type="button"
                                     aria-disabled="true"
@@ -175,9 +193,14 @@ export function ProjectTaskCard({
                 />
             </article>
 
-            {isEditModalOpen && (
-                // TODO: Implement Edit Task modal
-                <></>
+            {canUpdateTasks && isEditModalOpen && (
+                <ProjectEditTaskModal
+                    open
+                    task={task}
+                    ownerId={ownerId}
+                    team={team}
+                    onClose={closeEditModal}
+                />
             )}
         </>
     );

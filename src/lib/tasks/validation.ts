@@ -16,8 +16,7 @@ const taskDueDateSchema = z
         );
     }, "La date d’échéance est invalide.");
 
-export const taskCreateSchema = z.object({
-    projectId: z.string().trim().min(1, "L’identifiant du projet est requis."),
+const taskFormSchema = z.object({
     title: z
         .string()
         .trim()
@@ -32,5 +31,22 @@ export const taskCreateSchema = z.object({
     assigneeIds: z.array(z.string().trim().min(1)),
     priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"], {
         error: "La priorité sélectionnée est invalide.",
+    }),
+});
+
+const projectIdSchema = z
+    .string()
+    .trim()
+    .min(1, "L’identifiant du projet est requis.");
+
+export const taskCreateSchema = taskFormSchema.extend({
+    projectId: projectIdSchema,
+});
+
+export const taskUpdateSchema = taskFormSchema.extend({
+    projectId: projectIdSchema,
+    taskId: z.string().trim().min(1, "L’identifiant de la tâche est requis."),
+    status: z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"], {
+        error: "Le statut sélectionné est invalide.",
     }),
 });
