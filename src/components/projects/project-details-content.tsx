@@ -3,10 +3,15 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ProjectAiTasksModal } from "@/components/projects/project-ai-tasks-modal";
+import { ProjectCreateTaskModal } from "@/components/projects/project-create-task-modal";
 import { ProjectEditModal } from "@/components/projects/project-edit-modal";
 import { ProjectTaskCard } from "@/components/projects/project-task-card";
 import { SearchIcon, TeamIcon } from "@/components/ui/icons";
 import type { ApiUser } from "@/lib/api/types";
+import {
+    hasProjectPermission,
+    resolveProjectRole,
+} from "@/lib/permissions";
 import {
     filterProjectTasks,
     projectTaskStatusLabels,
@@ -49,6 +54,11 @@ export function ProjectDetailsContent({
     const canComment =
         project.owner.id === currentUser.id ||
         project.members.some((member) => member.user.id === currentUser.id);
+    const projectRole = resolveProjectRole(
+        { ownerId: project.owner.id, userRole: project.userRole },
+        currentUser.id,
+    );
+    const canCreateTasks = hasProjectPermission(projectRole, "createTasks");
 
     return (
         <section className="mx-auto w-full max-w-300 px-5 py-10 md:px-0 md:py-14">
@@ -83,18 +93,21 @@ export function ProjectDetailsContent({
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                    <button
-                        type="button"
-                        onClick={() => setActiveModal("create-task")}
-                        className="flex h-11 items-center justify-center rounded-lg bg-[#202020] px-5 text-sm text-white outline-none hover:bg-black focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
-                    >
-                        Créer une tâche
-                    </button>
+                    {canCreateTasks && (
+                        <button
+                            type="button"
+                            aria-haspopup="dialog"
+                            onClick={() => setActiveModal("create-task")}
+                            className="flex h-11 items-center justify-center rounded-lg bg-[#202020] px-5 text-sm text-white outline-none hover:bg-black hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
+                        >
+                            Créer une tâche
+                        </button>
+                    )}
                     <button
                         type="button"
                         aria-haspopup="dialog"
                         onClick={() => setActiveModal("ai")}
-                        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c94f00] px-5 text-sm font-medium text-white outline-none hover:bg-[#a94300] focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
+                        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c94f00] px-5 text-sm font-medium text-white outline-none hover:bg-[#a94300] hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
                     >
                         <span aria-hidden="true">✦</span>
                         IA
@@ -236,9 +249,14 @@ export function ProjectDetailsContent({
                     onClose={() => setActiveModal(null)}
                 />
             )}
-            {activeModal === "create-task" && (
-                // TODO: Implement Create Task modal
-                <></>
+            {canCreateTasks && activeModal === "create-task" && (
+                <ProjectCreateTaskModal
+                    open
+                    projectId={project.id}
+                    ownerId={project.owner.id}
+                    team={project.team}
+                    onClose={() => setActiveModal(null)}
+                />
             )}
             {activeModal === "ai" && (
                 <ProjectAiTasksModal
