@@ -135,3 +135,31 @@ export function SearchIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function PencilIcon(props: IconProps) {
+  return (
+    <svg {...commonProps} {...props}>
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+        d="m14.7 5.3 4 4M4 20l3.75-.75L19 8a2.12 2.12 0 0 0-3-3L4.75 16.25 4 20Z"
+      />
+    </svg>
+  );
+}
+
+export function TrashIcon(props: IconProps) {
+  return (
+    <svg {...commonProps} {...props}>
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+        d="M4 7h16m-9 4v6m4-6v6M9 4h6l1 3H8l1-3Zm-3 3 1 13h10l1-13"
+      />
+    </svg>
+  );
+}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { ProjectAiTasksModal } from "@/components/projects/project-ai-tasks-modal";
 import { ProjectEditModal } from "@/components/projects/project-edit-modal";
 import { ProjectTaskCard } from "@/components/projects/project-task-card";
 import { SearchIcon, TeamIcon } from "@/components/ui/icons";
@@ -91,6 +92,7 @@ export function ProjectDetailsContent({
                     </button>
                     <button
                         type="button"
+                        aria-haspopup="dialog"
                         onClick={() => setActiveModal("ai")}
                         className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c94f00] px-5 text-sm font-medium text-white outline-none hover:bg-[#a94300] focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
                     >
@@ -239,8 +241,11 @@ export function ProjectDetailsContent({
                 <></>
             )}
             {activeModal === "ai" && (
-                // TODO: Implement AI modal
-                <></>
+                <ProjectAiTasksModal
+                    open
+                    tasks={project.tasks}
+                    onClose={() => setActiveModal(null)}
+                />
             )}
         </section>
     );
