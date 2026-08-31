@@ -59,6 +59,7 @@ export function ProjectDetailsContent({
         currentUser.id,
     );
     const canCreateTasks = hasProjectPermission(projectRole, "createTasks");
+    const canDeleteTasks = hasProjectPermission(projectRole, "deleteTasks");
     const canUpdateTasks = hasProjectPermission(projectRole, "updateTasks");
 
     return (
@@ -231,6 +232,7 @@ export function ProjectDetailsContent({
                                 task={task}
                                 currentUser={currentUser}
                                 canComment={canComment}
+                                canDeleteTasks={canDeleteTasks}
                                 canUpdateTasks={canUpdateTasks}
                                 ownerId={project.owner.id}
                                 team={project.team}

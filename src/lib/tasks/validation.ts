@@ -50,3 +50,8 @@ export const taskUpdateSchema = taskFormSchema.extend({
         error: "Le statut sélectionné est invalide.",
     }),
 });
+
+export const taskDeleteSchema = z.object({
+    projectId: projectIdSchema,
+    taskId: z.string().trim().min(1, "L’identifiant de la tâche est requis."),
+});

@@ -9,14 +9,23 @@ import {
     SERVICE_UNAVAILABLE_MESSAGE,
 } from "@/lib/api/errors";
 import { redirectOnExpiredSession } from "@/lib/auth/session-guard";
-import { createProjectTask, updateProjectTask } from "@/lib/tasks/service";
+import {
+    createProjectTask,
+    deleteProjectTask,
+    updateProjectTask,
+} from "@/lib/tasks/service";
 import type {
     TaskCreateFieldErrors,
     TaskCreateState,
+    TaskDeleteState,
     TaskUpdateFieldErrors,
     TaskUpdateState,
 } from "@/lib/tasks/types";
-import { taskCreateSchema, taskUpdateSchema } from "@/lib/tasks/validation";
+import {
+    taskCreateSchema,
+    taskDeleteSchema,
+    taskUpdateSchema,
+} from "@/lib/tasks/validation";
 
 function getTaskCreateErrorState(error: unknown): TaskCreateState {
     if (!(error instanceof ApiRequestError)) {
@@ -224,5 +233,70 @@ export async function updateProjectTaskAction(
         await redirectOnExpiredSession(error);
 
         return getTaskUpdateErrorState(error);
+    }
+}
+
+function revalidateTaskPages(projectId: string) {
+    revalidatePath(`/projects/${projectId}`);
+    revalidatePath("/projects");
+    revalidatePath("/dashboard");
+}
+
+/** Valide puis supprime définitivement une tâche du projet courant. */
+export async function deleteProjectTaskAction(
+    _previousState: TaskDeleteState,
+    formData: FormData,
+): Promise<TaskDeleteState> {
+    const result = taskDeleteSchema.safeParse({
+        projectId: formData.get("projectId"),
+        taskId: formData.get("taskId"),
+    });
+
+    if (!result.success) {
+        return {
+            status: "error",
+            message: "La tâche ciblée est invalide. Rechargez la page puis réessayez.",
+        };
+    }
+
+    try {
+        const response = await deleteProjectTask(
+            result.data.projectId,
+            result.data.taskId,
+        );
+
+        revalidateTaskPages(result.data.projectId);
+
+        return {
+            status: "success",
+            message: response.message || "Tâche supprimée avec succès.",
+        };
+    } catch (error) {
+        unstable_rethrow(error);
+        await redirectOnExpiredSession(error);
+
+        if (error instanceof ApiRequestError && error.status === 404) {
+            revalidateTaskPages(result.data.projectId);
+
+            return {
+                status: "success",
+                message: "Cette tâche n’existe plus.",
+            };
+        }
+
+        if (error instanceof ApiRequestError && error.status === 403) {
+            return {
+                status: "error",
+                message: "Vous n’avez pas l’autorisation de supprimer cette tâche.",
+            };
+        }
+
+        return {
+            status: "error",
+            message:
+                error instanceof ApiRequestError
+                    ? error.message
+                    : SERVICE_UNAVAILABLE_MESSAGE,
+        };
     }
 }

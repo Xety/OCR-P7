@@ -68,3 +68,13 @@ export async function updateProjectTask(
 
     return { response, task };
 }
+
+/** Supprime définitivement une tâche du projet. */
+export async function deleteProjectTask(projectId: string, taskId: string) {
+    const token = await requireSessionToken();
+
+    return apiRequest<Record<string, never>>(
+        `/projects/${encodeURIComponent(projectId)}/tasks/${encodeURIComponent(taskId)}`,
+        { method: "DELETE", token },
+    );
+}

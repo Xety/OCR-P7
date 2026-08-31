@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ProjectDeleteTaskModal } from "@/components/projects/project-delete-task-modal";
 import { ProjectEditTaskModal } from "@/components/projects/project-edit-task-modal";
 import { ProjectTaskComments } from "@/components/projects/project-task-comments";
 import { CalendarIcon } from "@/components/ui/icons";
@@ -19,6 +20,7 @@ type ProjectTaskCardProps = {
     task: ApiProjectTask;
     currentUser: ApiUser;
     canComment: boolean;
+    canDeleteTasks: boolean;
     canUpdateTasks: boolean;
     ownerId: string;
     team: ProjectTeamMember[];
@@ -35,11 +37,13 @@ export function ProjectTaskCard({
     task,
     currentUser,
     canComment,
+    canDeleteTasks,
     canUpdateTasks,
     ownerId,
     team,
 }: ProjectTaskCardProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const menuWrapperRef = useRef<HTMLDivElement>(null);
     const menuTriggerRef = useRef<HTMLButtonElement>(null);
@@ -74,6 +78,11 @@ export function ProjectTaskCard({
 
     function closeEditModal() {
         setIsEditModalOpen(false);
+        window.requestAnimationFrame(() => menuTriggerRef.current?.focus());
+    }
+
+    function closeDeleteModal() {
+        setIsDeleteModalOpen(false);
         window.requestAnimationFrame(() => menuTriggerRef.current?.focus());
     }
 
@@ -128,15 +137,19 @@ export function ProjectTaskCard({
                                         Modifier
                                     </button>
                                 )}
-                                <button
-                                    type="button"
-                                    aria-disabled="true"
-                                    onClick={(event) => event.preventDefault()}
-                                    className="w-full cursor-not-allowed rounded-md px-3 py-2 text-left text-sm text-[#6B7280] opacity-70"
-                                >
-                                    Supprimer
-                                    <span className="sr-only"> — indisponible pour le moment</span>
-                                </button>
+                                {canDeleteTasks && (
+                                    <button
+                                        type="button"
+                                        aria-haspopup="dialog"
+                                        onClick={() => {
+                                            setIsMenuOpen(false);
+                                            setIsDeleteModalOpen(true);
+                                        }}
+                                        className="w-full rounded-md px-3 py-2 text-left text-sm text-[#b42318] outline-none hover:cursor-pointer hover:bg-[#fff4f3] focus-visible:ring-2 focus-visible:ring-[#b42318]"
+                                    >
+                                        Supprimer
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>
@@ -200,6 +213,13 @@ export function ProjectTaskCard({
                     ownerId={ownerId}
                     team={team}
                     onClose={closeEditModal}
+                />
+            )}
+            {canDeleteTasks && isDeleteModalOpen && (
+                <ProjectDeleteTaskModal
+                    open
+                    task={task}
+                    onClose={closeDeleteModal}
                 />
             )}
         </>

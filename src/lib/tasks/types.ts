@@ -41,3 +41,8 @@ export type TaskUpdateState = {
     message?: string;
     task?: ApiProjectTask;
 };
+
+export type TaskDeleteState = {
+    status?: "success" | "error";
+    message?: string;
+};
