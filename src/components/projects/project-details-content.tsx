@@ -114,7 +114,7 @@ export function ProjectDetailsContent({
                                     type="button"
                                     aria-haspopup="dialog"
                                     onClick={() => setActiveModal("edit-project")}
-                                    className="rounded-sm text-xs font-medium text-(--brand-text) underline underline-offset-4 outline-none hover:no-underline hover:cursor-pointer"
+                                    className="rounded-sm text-xs font-medium text-(--brand-text) underline underline-offset-4 outline-none hover:no-underline hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2"
                                 >
                                     Modifier
                                 </button>
