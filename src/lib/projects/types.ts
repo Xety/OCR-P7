@@ -117,6 +117,11 @@ export type ProjectCreateState = ProjectUpdateState & {
     projectId?: string;
 };
 
+export type ProjectDeleteState = {
+    status?: "error";
+    message?: string;
+};
+
 export type UserSearchResult = {
     users: ApiUser[];
     message?: string;

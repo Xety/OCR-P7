@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ProjectAiTasksModal } from "@/components/projects/project-ai-tasks-modal";
 import { ProjectCreateTaskModal } from "@/components/projects/project-create-task-modal";
+import { ProjectDeleteModal } from "@/components/projects/project-delete-modal";
 import { ProjectEditModal } from "@/components/projects/project-edit-modal";
 import { ProjectTaskCard } from "@/components/projects/project-task-card";
 import { SearchIcon, TeamIcon } from "@/components/ui/icons";
@@ -27,7 +28,7 @@ type ProjectDetailsContentProps = {
     currentUser: ApiUser;
 };
 
-type ActiveModal = "edit-project" | "create-task" | "ai" | null;
+type ActiveModal = "edit-project" | "delete-project" | "create-task" | "ai" | null;
 
 const statusOptions: Array<{
     value: ProjectTaskStatus | "ALL";
@@ -58,10 +59,13 @@ export function ProjectDetailsContent({
         { ownerId: project.owner.id, userRole: project.userRole },
         currentUser.id,
     );
+    const canUpdateProject = hasProjectPermission(projectRole, "updateProject");
+    const canDeleteProject = hasProjectPermission(projectRole, "deleteProject");
     const canCreateTasks = hasProjectPermission(projectRole, "createTasks");
     const canDeleteTasks = hasProjectPermission(projectRole, "deleteTasks");
     const canUpdateTasks = hasProjectPermission(projectRole, "updateTasks");
 
+    // Scroll à la tâche ciblée par l’ancre dans l’URL, si elle existe.
     useEffect(() => {
         let frameId = 0;
 
@@ -105,13 +109,24 @@ export function ProjectDetailsContent({
                             <h1 className="font-manrope text-2xl font-semibold text-neutral-950">
                                 {project.name}
                             </h1>
-                            {project.userRole === "ADMIN" && (
+                            {canUpdateProject && (
                                 <button
                                     type="button"
+                                    aria-haspopup="dialog"
                                     onClick={() => setActiveModal("edit-project")}
                                     className="rounded-sm text-xs font-medium text-(--brand-text) underline underline-offset-4 outline-none hover:no-underline hover:cursor-pointer"
                                 >
                                     Modifier
+                                </button>
+                            )}
+                            {canDeleteProject && (
+                                <button
+                                    type="button"
+                                    aria-haspopup="dialog"
+                                    onClick={() => setActiveModal("delete-project")}
+                                    className="rounded-sm text-xs font-medium text-[#b42318] underline underline-offset-4 outline-none hover:no-underline hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-[#b42318] focus-visible:ring-offset-2"
+                                >
+                                    Supprimer
                                 </button>
                             )}
                         </div>
@@ -275,8 +290,15 @@ export function ProjectDetailsContent({
                 )}
             </div>
 
-            {activeModal === "edit-project" && (
+            {canUpdateProject && activeModal === "edit-project" && (
                 <ProjectEditModal
+                    open
+                    project={project}
+                    onClose={() => setActiveModal(null)}
+                />
+            )}
+            {canDeleteProject && activeModal === "delete-project" && (
+                <ProjectDeleteModal
                     open
                     project={project}
                     onClose={() => setActiveModal(null)}

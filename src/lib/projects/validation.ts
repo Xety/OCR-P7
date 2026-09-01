@@ -26,6 +26,10 @@ export const projectUpdateSchema = projectFormSchema.extend({
     projectId: z.string().trim().min(1, "L’identifiant du projet est requis."),
 });
 
+export const projectDeleteSchema = z.object({
+    projectId: z.string().trim().min(1, "L’identifiant du projet est requis."),
+});
+
 export const userSearchSchema = z
     .string()
     .trim()

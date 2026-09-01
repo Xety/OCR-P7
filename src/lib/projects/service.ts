@@ -122,18 +122,18 @@ export async function updateProjectWithContributors(
         }
     }
 
-    // Create a map of current contributors for easy lookup
+    // Création d'une map des contributeurs actuels pour une recherche
     const currentContributors = new Map(
         currentProject.members.map((member) => [member.user.id, member]),
     );
-    // Determine which contributors to add and which to remove
+    // Déterminer quels contributeurs ajouter et quels supprimer
     const contributorsToRemove = currentProject.members.filter(
         (member) => !desiredContributors.has(member.user.id),
     );
     const contributorsToAdd = [...desiredContributors.values()].filter(
         (contributor) => !currentContributors.has(contributor.id),
     );
-    // Prepare the API requests for adding and removing contributors
+    // Préparer les requêtes API pour ajouter et supprimer des contributeurs
     const membershipChanges = [
         ...contributorsToRemove.map((member) =>
             apiRequest<Record<string, never>>(
@@ -156,7 +156,7 @@ export async function updateProjectWithContributors(
         ),
     ];
 
-    // Execute the membership changes and handle any errors
+    // Execute les changements d'adhésion et gérer les erreurs
     if (membershipChanges.length > 0) {
         const results = await Promise.allSettled(membershipChanges);
         const failures = results.filter(
@@ -179,6 +179,22 @@ export async function updateProjectWithContributors(
     }
 
     return updateResponse;
+}
+
+/**
+ * Supprime définitivement un projet avec la session authentifiée.
+ *
+ * @param projectId L’identifiant du projet à supprimer.
+ *
+ * @returns La réponse de l’API après la suppression du projet.
+ */
+export async function deleteProject(projectId: string) {
+    const token = await requireSessionToken();
+
+    return apiRequest<Record<string, never>>(
+        `/projects/${encodeURIComponent(projectId)}`,
+        { method: "DELETE", token },
+    );
 }
 
 /**

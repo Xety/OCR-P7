@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { unstable_rethrow } from "next/navigation";
+import { redirect, unstable_rethrow } from "next/navigation";
 import * as z from "zod";
 import { ApiRequestError } from "@/lib/api/client";
 import {
@@ -11,6 +11,7 @@ import {
 import { redirectOnExpiredSession } from "@/lib/auth/session-guard";
 import {
     createProject,
+    deleteProject,
     PartialProjectUpdateError,
     searchProjectUsers,
     updateProjectWithContributors,
@@ -18,15 +19,22 @@ import {
 import type {
     ProjectContributorInput,
     ProjectCreateState,
+    ProjectDeleteState,
     ProjectFieldErrors,
     ProjectUpdateState,
     UserSearchResult,
 } from "@/lib/projects/types";
 import {
     projectCreateSchema,
+    projectDeleteSchema,
     projectUpdateSchema,
     userSearchSchema,
 } from "@/lib/projects/validation";
+
+function revalidateProjectLists() {
+    revalidatePath("/projects");
+    revalidatePath("/dashboard");
+}
 
 /**
  *  Récupère la liste des contributeurs à partir des données du formulaire.
@@ -188,6 +196,59 @@ export async function updateProjectAction(
         }
 
         return getProjectErrorState(error);
+    }
+}
+
+/**
+ * Valide et supprime un projet à partir.
+ *
+ * @param _previousState L’état précédent de la mise à jour du projet.
+ * @param formData Les données du formulaire.
+ *
+ * @returns
+ */
+export async function deleteProjectAction(
+    _previousState: ProjectDeleteState,
+    formData: FormData,
+): Promise<ProjectDeleteState> {
+    const result = projectDeleteSchema.safeParse({
+        projectId: formData.get("projectId"),
+    });
+
+    if (!result.success) {
+        return {
+            status: "error",
+            message: "Le projet ciblé est invalide. Rechargez la page puis réessayez.",
+        };
+    }
+
+    try {
+        await deleteProject(result.data.projectId);
+        revalidateProjectLists();
+        redirect("/projects");
+    } catch (error) {
+        unstable_rethrow(error);
+        await redirectOnExpiredSession(error);
+
+        if (error instanceof ApiRequestError && error.status === 404) {
+            revalidateProjectLists();
+            redirect("/projects");
+        }
+
+        if (error instanceof ApiRequestError && error.status === 403) {
+            return {
+                status: "error",
+                message: "Vous n’avez pas l’autorisation de supprimer ce projet.",
+            };
+        }
+
+        return {
+            status: "error",
+            message:
+                error instanceof ApiRequestError
+                    ? error.message
+                    : SERVICE_UNAVAILABLE_MESSAGE,
+        };
     }
 }
 
