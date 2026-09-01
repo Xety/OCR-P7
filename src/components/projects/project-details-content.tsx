@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProjectAiTasksModal } from "@/components/projects/project-ai-tasks-modal";
 import { ProjectCreateTaskModal } from "@/components/projects/project-create-task-modal";
 import { ProjectEditModal } from "@/components/projects/project-edit-modal";
@@ -61,6 +61,33 @@ export function ProjectDetailsContent({
     const canCreateTasks = hasProjectPermission(projectRole, "createTasks");
     const canDeleteTasks = hasProjectPermission(projectRole, "deleteTasks");
     const canUpdateTasks = hasProjectPermission(projectRole, "updateTasks");
+
+    useEffect(() => {
+        let frameId = 0;
+
+        function scrollToHashTarget() {
+            window.cancelAnimationFrame(frameId);
+            frameId = window.requestAnimationFrame(() => {
+                const targetId = window.location.hash.slice(1);
+
+                if (!targetId) {
+                    return;
+                }
+
+                document.getElementById(targetId)?.scrollIntoView({
+                    block: "start",
+                });
+            });
+        }
+
+        scrollToHashTarget();
+        window.addEventListener("hashchange", scrollToHashTarget);
+
+        return () => {
+            window.cancelAnimationFrame(frameId);
+            window.removeEventListener("hashchange", scrollToHashTarget);
+        };
+    }, [project.id]);
 
     return (
         <section className="mx-auto w-full max-w-300 px-5 py-10 md:px-0 md:py-14">

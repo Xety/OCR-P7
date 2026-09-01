@@ -23,6 +23,29 @@ const priorityOrder: Record<ProjectTaskPriority, number> = {
 };
 
 /**
+ * Génère un identifiant d'ancre pour une tâche de projet à partir de son identifiant.
+ *
+ * @param taskId L'identifiant de la tâche de projet.
+ *
+ * @returns L'identifiant d'ancre pour la tâche de projet.
+ */
+export function getProjectTaskAnchorId(taskId: string) {
+    return `task-${taskId}`;
+}
+
+/**
+ * Génère un lien vers une tâche de projet à partir de l'identifiant du projet et de l'identifiant de la tâche.
+ *
+ * @param projectId L'identifiant du projet.
+ * @param taskId L'identifiant de la tâche de projet.
+ *
+ * @returns Le lien vers la tâche de projet.
+ */
+export function getProjectTaskHref(projectId: string, taskId: string) {
+    return `/projects/${encodeURIComponent(projectId)}#${getProjectTaskAnchorId(taskId)}`;
+}
+
+/**
  * Prépare les données de carte de projet à partir des données du projet et des tâches.
  * @param project Les données du projet.
  * @param tasks Les tâches du projet.

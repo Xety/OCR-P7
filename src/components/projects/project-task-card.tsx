@@ -8,6 +8,7 @@ import { CalendarIcon } from "@/components/ui/icons";
 import type { ApiUser } from "@/lib/api/types";
 import {
     formatProjectDate,
+    getProjectTaskAnchorId,
     projectTaskStatusLabels,
 } from "@/lib/projects/project-utils";
 import type {
@@ -88,7 +89,10 @@ export function ProjectTaskCard({
 
     return (
         <>
-            <article className="rounded-lg border border-[#d9dee3] bg-white px-5 py-5 sm:px-8">
+            <article
+                id={getProjectTaskAnchorId(task.id)}
+                className="scroll-mt-24 rounded-lg border border-[#d9dee3] bg-white px-5 py-5 sm:px-8"
+            >
                 <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-3">

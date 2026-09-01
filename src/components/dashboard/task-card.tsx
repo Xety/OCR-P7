@@ -6,6 +6,7 @@ import {
     statusLabels,
 } from "@/lib/dashboard/task-utils";
 import type { DashboardTask } from "@/lib/dashboard/types";
+import { getProjectTaskHref } from "@/lib/projects/project-utils";
 
 type TaskCardProps = {
     task: DashboardTask;
@@ -101,7 +102,7 @@ export function TaskCard({ task, variant }: TaskCardProps) {
                         </span>
                     )}
                     <Link
-                        href={`/projects/${task.project.id}/tasks/${task.id}`}
+                        href={getProjectTaskHref(task.project.id, task.id)}
                         className={`flex h-10 items-center justify-center rounded-lg bg-[#202020] px-7 text-sm text-white outline-none transition-colors hover:bg-black focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-2 ${isList ? "sm:mt-7" : "w-24"
                             }`}
                     >
