@@ -4,7 +4,10 @@ import { refresh } from "next/cache";
 import { unstable_rethrow } from "next/navigation";
 import * as z from "zod";
 import { updatePassword, updateProfile } from "@/lib/account/service";
-import { getPasswordInput, getProfileInput } from "@/lib/account/validation";
+import {
+    passwordUpdateSchema,
+    profileSchema,
+} from "@/lib/account/validation";
 import type {
     PasswordActionState,
     PasswordFieldErrors,
@@ -18,7 +21,6 @@ import {
 } from "@/lib/api/errors";
 import { redirectOnExpiredSession } from "@/lib/auth/session-guard";
 import { joinFullName } from "@/lib/user";
-import { profileSchema, passwordUpdateSchema } from "@/lib/validation/schemas";
 
 function getProfileErrorState(error: unknown): ProfileActionState {
     if (!(error instanceof ApiRequestError)) {
@@ -62,11 +64,23 @@ function getPasswordErrorState(error: unknown): PasswordActionState {
     };
 }
 
+/**
+ * Met à jour le profil de l’utilisateur courant.
+ *
+ * @param _previousState
+ * @param formData
+ *
+ * @returns L’état de l’action de mise à jour du profil.
+ */
 export async function updateProfileAction(
     _previousState: ProfileActionState,
     formData: FormData,
 ): Promise<ProfileActionState> {
-    const result = profileSchema.safeParse(getProfileInput(formData));
+    const result = profileSchema.safeParse({
+        lastName: formData.get("lastName"),
+        firstName: formData.get("firstName"),
+        email: formData.get("email")
+    });
 
     if (!result.success) {
         const { fieldErrors } = z.flattenError(result.error);
@@ -103,11 +117,22 @@ export async function updateProfileAction(
     }
 }
 
+/**
+ * Met à jour le mot de passe de l’utilisateur courant.
+ *
+ * @param _previousState
+ * @param formData
+ *
+ * @returns L’état de l’action de mise à jour du mot de passe.
+ */
 export async function updatePasswordAction(
     _previousState: PasswordActionState,
     formData: FormData,
 ): Promise<PasswordActionState> {
-    const result = passwordUpdateSchema.safeParse(getPasswordInput(formData));
+    const result = passwordUpdateSchema.safeParse({
+        currentPassword: formData.get("currentPassword"),
+        newPassword: formData.get("newPassword")
+    });
 
     if (!result.success) {
         const { fieldErrors } = z.flattenError(result.error);

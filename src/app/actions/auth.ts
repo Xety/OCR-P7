@@ -10,8 +10,7 @@ import {
 import type { AuthData } from "@/lib/api/types";
 import { createSession, deleteSession } from "@/lib/auth/session";
 import type { AuthFormState, AuthFieldErrors } from "@/lib/auth/types";
-import { getCredentialsInput } from "@/lib/auth/validation";
-import { credentialsSchemas } from "@/lib/validation/schemas";
+import { credentialsSchemas } from "@/lib/auth/validation";
 
 function getErrorState(error: unknown): AuthFormState {
     if (error instanceof ApiRequestError) {
@@ -35,9 +34,10 @@ async function authenticate(
     mode: "login" | "signup",
     formData: FormData,
 ): Promise<AuthFormState> {
-    const result = credentialsSchemas[mode].safeParse(
-        getCredentialsInput(formData),
-    );
+    const result = credentialsSchemas[mode].safeParse({
+        email: formData.get("email"),
+        password: formData.get("password")
+    });
 
     if (!result.success) {
         const { fieldErrors } = z.flattenError(result.error);
