@@ -36,7 +36,7 @@ Depuis le dossier `OCR-P7` :
 npm install
 ```
 
-Copier `.env.example` vers `.env.local` :
+Copier `.env.example` vers `.env` :
 
 ```env
 API_BASE_URL=http://localhost:8000
