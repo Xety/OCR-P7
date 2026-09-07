@@ -241,7 +241,7 @@ export function ProjectDetailsContent({
                             onChange={(event) =>
                                 setStatus(event.target.value as ProjectTaskStatus | "ALL")
                             }
-                            className="h-15 min-w-44 rounded-lg border border-[#E5E7EB] bg-white px-6 text-sm text-[#6B7280] outline-none focus:border-(--brand) focus:ring-2 focus:ring-[#d3590b33] hover:cursor-pointer"
+                            className="h-15 w-full basis-full rounded-lg border border-[#E5E7EB] bg-white px-6 text-sm text-[#6B7280] outline-none focus:border-(--brand) focus:ring-2 focus:ring-[#d3590b33] hover:cursor-pointer sm:w-auto sm:min-w-44 sm:basis-auto"
                         >
                             {statusOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -249,10 +249,13 @@ export function ProjectDetailsContent({
                                 </option>
                             ))}
                         </select>
-                        <label className="relative block min-w-0 flex-1 sm:min-w-64">
-                            <label htmlFor="project-task-search" className="sr-only">
+                        <label
+                            htmlFor="project-task-search"
+                            className="relative block w-full basis-full sm:w-auto sm:min-w-64 sm:flex-1 sm:basis-auto"
+                        >
+                            <span className="sr-only">
                                 Rechercher une tâche
-                            </label>
+                            </span>
                             <input
                                 id="project-task-search"
                                 type="search"
