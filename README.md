@@ -1,43 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Abricot
 
-## Getting Started
+Abricot est une application collaborative de gestion de projets et de tâches.
 
-First, run the development server:
+Le projet est composé de deux parties :
+
+- `OCR-P7` : frontend développé avec Next.js ;
+- [`P7BACKEND`](https://github.com/OpenClassrooms-Student-Center/dev-react-P10) : API développée avec Express, TypeScript et Prisma.
+
+## Prérequis
+
+- Node.js 20 ou supérieur ;
+- npm ;
+- Git.
+
+Les dossiers `OCR-P7` et [`P7BACKEND`](https://github.com/OpenClassrooms-Student-Center/dev-react-P10) doivent être installés séparément.
+
+
+## Installation du backend
+
+Les instructions d'installation du backend sont sur le [repo GitHub du projet](https://github.com/OpenClassrooms-Student-Center/dev-react-P10)
+
+L’API est disponible sur [http://localhost:8000](http://localhost:8000) et sa documentation sur [http://localhost:8000/api-docs](http://localhost:8000/api-docs).
+
+## Installation du frontend
+
+Cloner le frontend :
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Xety/OCR-P7.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Depuis le dossier `OCR-P7` :
 
-The frontend calls the existing Abricot API from the Next.js server. Copy
-`.env.example` to `.env.local` if the API is not available at the default URL:
+```bash
+npm install
+```
+
+Copier `.env.example` vers `.env.local` :
 
 ```env
 API_BASE_URL=http://localhost:8000
 ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Démarrer le frontend :
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev
+```
 
-## Learn More
+L’application est disponible sur [http://localhost:3000](http://localhost:3000).
 
-To learn more about Next.js, take a look at the following resources:
+## Compte de démonstration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Après avoir exécuté le seed du backend :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```text
+Email : alice@example.com
+Mot de passe : P@ssword123
+```
 
-## Deploy on Vercel
+## Vérifications
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Depuis le dossier `OCR-P7` :
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npm run build
+```

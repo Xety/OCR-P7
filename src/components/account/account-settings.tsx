@@ -18,8 +18,6 @@ type AccountSettingsProps = {
 
 const initialProfileState: ProfileActionState = {};
 const initialPasswordState: PasswordActionState = {};
-const inputClassName =
-    "h-12 w-full rounded-[5px] border border-[#d9dee3] bg-white px-4 text-sm text-neutral-950 outline-none focus:border-(--brand) focus:ring-2 focus:ring-[#d3590b33] aria-invalid:border-[#b42318]";
 
 function FieldError({ id, errors }: { id: string; errors?: string[] }) {
     if (!errors?.length) {
@@ -118,7 +116,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                             onChange={(event) => setLastName(event.target.value)}
                             aria-invalid={Boolean(profileState.errors?.lastName)}
                             aria-describedby={lastNameErrorId}
-                            className={inputClassName}
+                            className="h-12 w-full rounded-[5px] border border-[#d9dee3] bg-white px-4 text-sm text-neutral-950 outline-none focus:border-(--brand) focus:ring-2 focus:ring-[#d3590b33] aria-invalid:border-[#b42318]"
                         />
                         <FieldError
                             id="account-last-name-error"
@@ -139,7 +137,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                             onChange={(event) => setFirstName(event.target.value)}
                             aria-invalid={Boolean(profileState.errors?.firstName)}
                             aria-describedby={firstNameErrorId}
-                            className={inputClassName}
+                            className="h-12 w-full rounded-[5px] border border-[#d9dee3] bg-white px-4 text-sm text-neutral-950 outline-none focus:border-(--brand) focus:ring-2 focus:ring-[#d3590b33] aria-invalid:border-[#b42318]"
                         />
                         <FieldError
                             id="account-first-name-error"
@@ -161,7 +159,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                             onChange={(event) => setEmail(event.target.value)}
                             aria-invalid={Boolean(profileState.errors?.email)}
                             aria-describedby={emailErrorId}
-                            className={inputClassName}
+                            className="h-12 w-full rounded-[5px] border border-[#d9dee3] bg-white px-4 text-sm text-neutral-950 outline-none focus:border-(--brand) focus:ring-2 focus:ring-[#d3590b33] aria-invalid:border-[#b42318]"
                         />
                         <FieldError
                             id="account-email-error"
@@ -175,7 +173,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                         type="submit"
                         disabled={profilePending}
                         aria-disabled={profilePending}
-                        className="flex min-h-12 items-center justify-center rounded-lg bg-[#202020] px-6 text-sm text-white outline-none transition-colors hover:bg-black focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-3 disabled:cursor-wait disabled:bg-neutral-500"
+                        className="flex min-h-12 items-center justify-center rounded-lg bg-[#202020] px-6 text-sm text-white outline-none transition-colors hover:bg-black hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-3 disabled:cursor-wait disabled:bg-neutral-500"
                     >
                         {profilePending
                             ? "Modification…"
@@ -212,7 +210,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                                 passwordState.errors?.currentPassword,
                             )}
                             aria-describedby={currentPasswordErrorId}
-                            className={inputClassName}
+                            className="h-12 w-full rounded-[5px] border border-[#d9dee3] bg-white px-4 text-sm text-neutral-950 outline-none focus:border-(--brand) focus:ring-2 focus:ring-[#d3590b33] aria-invalid:border-[#b42318]"
                         />
                         <FieldError
                             id="account-current-password-error"
@@ -236,7 +234,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                             minLength={8}
                             aria-invalid={Boolean(passwordState.errors?.newPassword)}
                             aria-describedby={newPasswordDescription}
-                            className={inputClassName}
+                            className="h-12 w-full rounded-[5px] border border-[#d9dee3] bg-white px-4 text-sm text-neutral-950 outline-none focus:border-(--brand) focus:ring-2 focus:ring-[#d3590b33] aria-invalid:border-[#b42318]"
                         />
                         <p id={passwordHelpId} className="text-xs leading-5 text-[#858b98]">
                             Au moins 8 caractères, avec une majuscule, une minuscule,
@@ -254,7 +252,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                         type="submit"
                         disabled={passwordPending}
                         aria-disabled={passwordPending}
-                        className="flex min-h-12 items-center justify-center rounded-lg bg-[#202020] px-6 text-sm text-white outline-none transition-colors hover:bg-black focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-3 disabled:cursor-wait disabled:bg-neutral-500"
+                        className="flex min-h-12 items-center justify-center rounded-lg bg-[#202020] px-6 text-sm text-white outline-none transition-colors hover:bg-black hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-(--brand) focus-visible:ring-offset-3 disabled:cursor-wait disabled:bg-neutral-500"
                     >
                         {passwordPending
                             ? "Modification…"
